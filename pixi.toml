@@ -1,0 +1,14 @@
+[workspace]
+authors = ["Filip Stanis <filip@stanis.me>"]
+channels = ["conda-forge"]
+name = "vertex2tabby"
+version = "0.1.0"
+platforms = ["win-64", "linux-64", "osx-64"]
+
+[tasks]
+start = "python server.py"
+
+[dependencies]
+google-auth = ">=2.45.0,<3"
+python = ">=3.14.2,<3.15"
+httpx = ">=0.28.1,<0.29"
