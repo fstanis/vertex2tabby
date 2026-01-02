@@ -1,0 +1,17 @@
+[model.completion.http]
+kind = "mistral/completion"
+model_name = "codestral-2"
+api_endpoint = "http://localhost:4000"
+api_key = ""
+
+[model.chat.http]
+kind = "openai/chat"
+model_name = "deepseek-v3.2-maas"
+api_endpoint = "http://localhost:4000"
+api_key = ""
+
+[model.embedding.http]
+kind = "azure/embedding"
+model_name = "text-embedding"
+api_endpoint = "http://localhost:4000"
+api_key = ""

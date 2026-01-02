@@ -94,3 +94,30 @@ pixi run start
 
 Then start Tabby and go to http://localhost:8080/system to verify the models
 work.
+
+## Docker
+
+To make things easier, you can use the provided docker image which already
+includes Tabby with the proxy.
+
+First, follow the steps above to install `gcloud` and generate a token.
+
+```
+gcloud auth application-default login
+
+mkdir secrets
+cp "$HOME/.config/gcloud/application_default_credentials.json" "./secrets/google_adc.json"
+```
+
+Then, start docker. In this example, Tabby will be accessible on
+http://localhost:11000/
+
+```
+docker run \
+  --env GOOGLE_PROJECT_ID=your-cloud-project-id \
+  --env GOOGLE_REGION=europe-west4 \
+  --mount source=./secrets,destination=/run/secrets,type=bind \
+  --mount source=./data,destination=/root/.tabby,type=bind \
+  -p 11000:8080 \
+  ghcr.io/fstanis/vertex2tabby/vertex2tabby
+```
