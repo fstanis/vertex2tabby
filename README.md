@@ -1,6 +1,6 @@
 # vertex2tabby
 
-A simply proxy allowing you to use generative AI models hosted on Google Cloud
+A simple proxy allowing you to use generative AI models hosted on Google Cloud
 ([Vertex AI](https://docs.cloud.google.com/vertex-ai/docs/start/introduction-unified-platform))
 together with [Tabby](https://www.tabbyml.com/).
 
@@ -119,5 +119,5 @@ docker run \
   --mount source=./secrets,destination=/run/secrets,type=bind \
   --mount source=./data,destination=/root/.tabby,type=bind \
   -p 11000:8080 \
-  ghcr.io/fstanis/vertex2tabby/vertex2tabby
+  ghcr.io/fstanis/vertex2tabby:latest
 ```
