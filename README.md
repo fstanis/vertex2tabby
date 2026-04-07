@@ -14,6 +14,7 @@ results.
 ### Supported conversions
 
 - [`openai/chat`](https://tabby.tabbyml.com/docs/references/models-http-api/deepseek/) ⇒ [DeepSeek-V3.2](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/maas/deepseek/deepseek-v32)
+- [`openai/chat`](https://tabby.tabbyml.com/docs/references/models-http-api/deepseek/) ⇒ [GLM-5](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/maas/glm/glm-5)
 - [`mistral/chat`](https://tabby.tabbyml.com/docs/references/models-http-api/mistral-ai/) ⇒ [Codestral 2](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/partner-models/mistral/codestral-2)
 - [`mistral/completion`](https://tabby.tabbyml.com/docs/references/models-http-api/mistral-ai/) ⇒ [Codestral 2](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/partner-models/mistral/codestral-2)
 - [`azure/embedding`](https://tabby.tabbyml.com/docs/references/models-http-api/azure-openai/) ⇒ [Text embeddings API](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/model-reference/text-embeddings-api)
@@ -52,6 +53,17 @@ api_endpoint = "http://localhost:4000"
 api_key = ""
 ```
 
+If you'd like to use GLM-5 instead of DeepSeek for your chat, replace the
+`model.chat.http` entry with this:
+
+```
+[model.chat.http]
+kind = "openai/chat"
+model_name = "glm-5-maas"
+api_endpoint = "http://localhost:4000"
+api_key = ""
+```
+
 If you'd like to use Codestral 2 instead of DeepSeek for your chat, replace the
 `model.chat.http` entry with this:
 
@@ -70,6 +82,7 @@ your cloud project:
 
 - [Codestral 2](https://console.cloud.google.com/vertex-ai/publishers/mistralai/model-garden/codestral-2)
 - [DeepSeek V3.2 API Service](https://console.cloud.google.com/vertex-ai/publishers/deepseek-ai/model-garden/deepseek-v3.2-maas)
+- [GLM-5 API Service](https://console.cloud.google.com/vertex-ai/publishers/zai-org/model-garden/glm-5-maas)
 - [Embeddings for Text](https://console.cloud.google.com/vertex-ai/publishers/google/model-garden/textembedding-gecko)
 
 ### Start the proxy

@@ -11,20 +11,25 @@ from google.auth.transport.requests import Request
 # Configuration
 LISTEN_ADDRESS = "127.0.0.1"
 LISTEN_PORT = 4000
-PROJECT_ID = os.environ.get("GOOGLE_PROJECT_ID")
-REGION = os.environ.get("GOOGLE_REGION")
+PROJECT_ID = os.environ.get("GOOGLE_CLOUD_PROJECT")
+REGION = os.environ.get("GOOGLE_CLOUD_LOCATION")
 EMBEDDING_REGION = "us-central1"
 SCOPES = ["https://www.googleapis.com/auth/cloud-platform"]
 
 EMBEDDING_MODEL = "text-embedding-005"
 MISTRAL_MODEL = "codestral-2"
 DEEPSEEK_MODEL = "deepseek-v3.2-maas"
+GLM_MODEL = "glm-5-maas"
 
 
 def get_headers():
     creds, _ = google.auth.default(scopes=SCOPES)
     creds.refresh(Request())
-    return {"Authorization": f"Bearer {creds.token}", "Accept": "application/json"}
+    return {
+        "Authorization": f"Bearer {creds.token}",
+        "Accept": "application/json",
+        "X-Goog-User-Project": PROJECT_ID,
+    }
 
 
 def build_url(region, model, stream):
@@ -96,6 +101,8 @@ class Handler(BaseHTTPRequestHandler):
             if req_model == DEEPSEEK_MODEL:
                 data["model"] = f"deepseek-ai/{DEEPSEEK_MODEL}"
                 region = "global"
+            elif req_model == GLM_MODEL:
+                data["model"] = f"zai-org/{GLM_MODEL}"
             url = build_url(region, req_model, stream)
         elif self.path == "/v1/fim/completions":
             if req_model and req_model != MISTRAL_MODEL:
@@ -114,7 +121,6 @@ class Handler(BaseHTTPRequestHandler):
             self.send_response(200)
             self.send_header("Content-Type", "text/event-stream")
             self.send_header("Cache-Control", "no-cache")
-            self.send_header("Connection", "keep-alive")
             self.end_headers()
 
             with httpx.Client() as client:
@@ -125,8 +131,6 @@ class Handler(BaseHTTPRequestHandler):
                         if line.startswith("data:"):
                             chunk = line[5:].strip()
                             if chunk == "[DONE]":
-                                self.wfile.write(b"data: [DONE]\n\n")
-                                self.wfile.flush()
                                 break
                             try:
                                 chunk_data = json.loads(chunk)
@@ -141,6 +145,7 @@ class Handler(BaseHTTPRequestHandler):
                                 self.wfile.flush()
                             except json.JSONDecodeError:
                                 pass
+            self.close_connection = True
         else:
             with httpx.Client() as client:
                 resp = client.post(url, json=data, headers=get_headers(), timeout=None)
@@ -173,6 +178,10 @@ class Handler(BaseHTTPRequestHandler):
 
 
 if __name__ == "__main__":
+    if not PROJECT_ID or not REGION:
+        print("Error: GOOGLE_CLOUD_PROJECT and GOOGLE_CLOUD_LOCATION must be set.")
+        exit(1)
+
     try:
         google.auth.default(scopes=SCOPES)
     except google.auth.exceptions.DefaultCredentialsError:
